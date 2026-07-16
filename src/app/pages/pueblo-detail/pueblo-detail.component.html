@@ -1,0 +1,291 @@
+<div class="container">
+  <!-- Botón volver -->
+  <div class="back-button">
+    <p-button label="Volver al listado" icon="pi pi-arrow-left" (onClick)="goBack()" styleClass="p-button-text">
+    </p-button>
+  </div>
+
+  <!-- Loading -->
+  @if (loading) {
+    <div class="loading-container">
+      <p-progressSpinner></p-progressSpinner>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (error && !loading) {
+    <div class="error-message">
+      <p>{{ error }}</p>
+      <p-button label="Volver" (onClick)="goBack()"></p-button>
+    </div>
+  }
+
+  <!-- Detalle del pueblo -->
+  @if (pueblo && !loading) {
+    <div class="pueblo-detail">
+      <!-- Header -->
+      <div class="pueblo-header">
+        <h1>{{ pueblo.nombre }}</h1>
+        <div class="location">
+          <i class="pi pi-map-marker" aria-hidden="true"></i>
+          <span>{{ pueblo.provincia }}, {{ pueblo.comunidadAutonoma }}</span>
+        </div>
+      </div>
+
+      <!-- Tags de características -->
+      <div class="caracteristicas-tags">
+        @if (pueblo.caracteristicas?.esCostero) {
+          <p-tag value="Costero" icon="pi pi-sun" severity="info"> </p-tag>
+        }
+        @if (pueblo.caracteristicas?.tieneCastillo) {
+          <p-tag value="Castillo" icon="pi pi-building" severity="warn"> </p-tag>
+        }
+        @if (pueblo.caracteristicas?.tieneIglesia) {
+          <p-tag value="Iglesia" icon="pi pi-star" severity="danger"> </p-tag>
+        }
+        @if (pueblo.caracteristicas?.tieneRio) {
+          <p-tag value="Río" icon="pi pi-filter" [style]="{ 'background-color': '#06b6d4' }"> </p-tag>
+        }
+      </div>
+
+      <!-- Galería de imágenes -->
+      @if (images.length > 0) {
+        <div class="gallery-section">
+          <p-galleria
+            [value]="images"
+            [responsiveOptions]="[
+              { breakpoint: '1024px', numVisible: 5 },
+              { breakpoint: '768px', numVisible: 3 },
+              { breakpoint: '560px', numVisible: 1 },
+            ]"
+            [containerStyle]="{ 'max-width': '100%' }"
+            [numVisible]="5"
+            [circular]="true"
+            [showItemNavigators]="true"
+            [showThumbnails]="true">
+            <ng-template pTemplate="item" let-item>
+              <img
+                [src]="item.itemImageSrc"
+                [alt]="item.alt"
+                (error)="onImageError($event)"
+                style="width: 100%; max-height: 500px; object-fit: cover; display: block" />
+            </ng-template>
+            <ng-template pTemplate="thumbnail" let-item>
+              <img
+                [src]="item.thumbnailImageSrc"
+                [alt]="item.alt"
+                (error)="onImageError($event)"
+                style="width: 100%; height: 60px; object-fit: cover; display: block" />
+            </ng-template>
+          </p-galleria>
+        </div>
+      }
+
+      <!-- Grid de información -->
+      <div class="info-grid">
+        <!-- Descripción -->
+        <p-card header="Descripción" class="info-card">
+          <p>{{ pueblo.descripcion }}</p>
+          @if (pueblo.poblacion || pueblo.altitud) {
+            <div class="meta-info">
+              <p-divider></p-divider>
+              <div class="meta-chips">
+                @if (pueblo.poblacion) {
+                  <span class="meta-chip">
+                    <i class="pi pi-users" aria-hidden="true"></i>
+                    <strong>Población:</strong> {{ pueblo.poblacion }} habitantes
+                  </span>
+                }
+                @if (pueblo.altitud) {
+                  <span class="meta-chip">
+                    <i class="pi pi-arrow-up" aria-hidden="true"></i>
+                    <strong>Altitud:</strong> {{ pueblo.altitud }}m
+                  </span>
+                }
+              </div>
+            </div>
+          }
+        </p-card>
+
+        <!-- Historia y patrimonio -->
+        @if (pueblo.historia) {
+          <p-card header="Historia y Patrimonio" class="info-card">
+            <div class="list-items">
+              @if (pueblo.historia.fundacion) {
+                <p>
+                  <i class="pi pi-clock" aria-hidden="true"></i>
+                  <strong>Fundación:</strong> {{ pueblo.historia.fundacion }}
+                </p>
+              }
+              @if (pueblo.historia.declaracionMonumento) {
+                <p>
+                  <i class="pi pi-verified" aria-hidden="true"></i>
+                  <strong>Declarado Monumento/Conjunto Histórico en:</strong> {{ pueblo.historia.declaracionMonumento }}
+                </p>
+              }
+              @if (pueblo.historia.candidaturaUnesco) {
+                <p>
+                  <i class="pi pi-globe" aria-hidden="true"></i>
+                  <strong>Candidatura a Patrimonio de la Humanidad (UNESCO)</strong>
+                </p>
+              }
+            </div>
+          </p-card>
+        }
+
+        <!-- Atracciones -->
+        @if (pueblo.atracciones && pueblo.atracciones.length > 0) {
+          <p-card header="Lugares de Interés" class="info-card">
+            <div class="list-items">
+              @for (atraccion of pueblo.atracciones; track atraccion.nombre) {
+                <div class="list-item">
+                  <h4>
+                    <i class="pi pi-map-marker" aria-hidden="true"></i>
+                    {{ atraccion.nombre }}
+                  </h4>
+                  <p>{{ atraccion.descripcion }}</p>
+                  <span class="tipo-badge">{{ atraccion.tipo.replaceAll('_', ' ') }}</span>
+                </div>
+              }
+            </div>
+          </p-card>
+        }
+
+        <!-- Gastronomía -->
+        @if (pueblo.gastronomia && pueblo.gastronomia.length > 0) {
+          <p-card header="Gastronomía" class="info-card">
+            <div class="list-items">
+              @for (plato of pueblo.gastronomia; track plato.nombre) {
+                <div class="list-item">
+                  <h4>
+                    <i class="pi pi-shopping-bag" aria-hidden="true"></i>
+                    {{ plato.nombre }}
+                  </h4>
+                  <p>{{ plato.descripcion }}</p>
+                </div>
+              }
+            </div>
+          </p-card>
+        }
+
+        <!-- Eventos -->
+        @if (pueblo.eventos && pueblo.eventos.length > 0) {
+          <p-card header="Fiestas y Eventos" class="info-card">
+            <div class="list-items">
+              @for (evento of pueblo.eventos; track evento.nombre) {
+                <div class="list-item">
+                  <h4>
+                    <i class="pi pi-calendar" aria-hidden="true"></i>
+                    {{ evento.nombre }}
+                  </h4>
+                  <p><strong>Fecha:</strong> {{ evento.fecha }}</p>
+                  <p>{{ evento.descripcion }}</p>
+                </div>
+              }
+            </div>
+          </p-card>
+        }
+
+        <!-- En el cine y la televisión -->
+        @if (pueblo.aparicionesMedia && pueblo.aparicionesMedia.length > 0) {
+          <p-card header="En el Cine y la Televisión" class="info-card">
+            <div class="list-items">
+              @for (aparicion of pueblo.aparicionesMedia; track aparicion.titulo) {
+                <div class="list-item">
+                  <h4>
+                    <i class="pi pi-video" aria-hidden="true"></i>
+                    {{ aparicion.titulo }}
+                  </h4>
+                  <p>
+                    <span class="tipo-badge">{{ aparicion.tipo }}</span>
+                    @if (aparicion.anio) {
+                      <span> — {{ aparicion.anio }}</span>
+                    }
+                  </p>
+                </div>
+              }
+            </div>
+          </p-card>
+        }
+
+        <!-- Información práctica para viajeros -->
+        @if (
+          pueblo.autocaravanas ||
+          pueblo.puntosRecargaElectrica ||
+          pueblo.afluenciaTuristica ||
+          pueblo.webcamUrl ||
+          pueblo.directorios
+        ) {
+          <p-card header="Información Práctica para Viajeros" class="info-card">
+            <div class="list-items">
+              @if (pueblo.afluenciaTuristica) {
+                <p>
+                  <i class="pi pi-chart-line" aria-hidden="true"></i>
+                  {{ pueblo.afluenciaTuristica }}
+                </p>
+              }
+              @if (pueblo.autocaravanas?.disponible) {
+                <p>
+                  <i class="pi pi-car" aria-hidden="true"></i>
+                  <strong>Área de autocaravanas:</strong>
+                  @if (pueblo.autocaravanas?.plazas) {
+                    <span>{{ pueblo.autocaravanas?.plazas }} plazas</span>
+                  }
+                  @if (pueblo.autocaravanas?.precio !== undefined) {
+                    <span>
+                      ,
+                      {{
+                        pueblo.autocaravanas?.precio === 0
+                          ? 'gratuita'
+                          : (pueblo.autocaravanas?.precio ?? 0) + ' €/noche'
+                      }}
+                    </span>
+                  }
+                </p>
+              }
+              @if (pueblo.puntosRecargaElectrica) {
+                <p>
+                  <i class="pi pi-bolt" aria-hidden="true"></i>
+                  <strong>Puntos de recarga eléctrica cercanos:</strong> {{ pueblo.puntosRecargaElectrica }}
+                </p>
+              }
+              @if (pueblo.webcamUrl) {
+                <p>
+                  <i class="pi pi-video" aria-hidden="true"></i>
+                  <a [href]="pueblo.webcamUrl" target="_blank" rel="noopener noreferrer">Ver webcam en directo</a>
+                </p>
+              }
+              @if (
+                pueblo.directorios?.restaurantes || pueblo.directorios?.alojamientos || pueblo.directorios?.comercios
+              ) {
+                <p>
+                  <i class="pi pi-map" aria-hidden="true"></i>
+                  <strong>En la zona:</strong>
+                  @if (pueblo.directorios?.restaurantes) {
+                    <span>{{ pueblo.directorios?.restaurantes }} restaurantes</span>
+                  }
+                  @if (pueblo.directorios?.alojamientos) {
+                    <span>, {{ pueblo.directorios?.alojamientos }} alojamientos</span>
+                  }
+                  @if (pueblo.directorios?.comercios) {
+                    <span>, {{ pueblo.directorios?.comercios }} comercios</span>
+                  }
+                </p>
+              }
+            </div>
+          </p-card>
+        }
+
+        <!-- Información adicional -->
+        @if (pueblo.anioIncorporacion) {
+          <p-card header="Información Adicional" class="info-card">
+            <p>
+              <i class="pi pi-info-circle" aria-hidden="true"></i>
+              <strong>Incorporado a la asociación en:</strong> {{ pueblo.anioIncorporacion }}
+            </p>
+          </p-card>
+        }
+      </div>
+    </div>
+  }
+</div>

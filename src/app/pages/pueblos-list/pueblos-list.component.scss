@@ -1,0 +1,328 @@
+.container {
+  padding: 3rem 1rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+  animation: fadeInDown 0.8s ease;
+
+  h1 {
+    font-size: 3rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.75rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+  }
+
+  .subtitle {
+    font-size: 1.3rem;
+    color: #667eea;
+    font-weight: 400;
+  }
+}
+
+.search-section {
+  max-width: 700px;
+  margin: 0 auto 3rem;
+  animation: fadeInUp 0.8s ease;
+
+  p-iconfield {
+    flex: 1;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3rem;
+    font-size: 1.05rem;
+    border-radius: 50px;
+    border: 2px solid transparent;
+    background: white;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    color: black;
+
+    &:focus {
+      border-color: #667eea;
+      box-shadow: 0 8px 30px rgba(102, 126, 234, 0.2);
+      outline: none;
+    }
+
+    &::placeholder {
+      color: #a0a0a0;
+    }
+  }
+}
+
+.results-count {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: black;
+  font-size: 1rem;
+  font-weight: 500;
+  animation: fadeIn 0.5s ease;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.error-message {
+  text-align: center;
+  padding: 3rem;
+  color: var(--red-500);
+  font-size: 1.2rem;
+  animation: shake 0.5s ease;
+}
+
+.no-results {
+  text-align: center;
+  padding: 4rem 2rem;
+  animation: fadeIn 0.5s ease;
+
+  i {
+    margin-bottom: 1.5rem;
+  }
+
+  p {
+    margin: 1rem 0;
+    color: var(--text-color-secondary);
+    font-size: 1.2rem;
+  }
+}
+
+.pueblos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 2.5rem;
+  animation: fadeIn 0.8s ease;
+}
+
+.pueblo-card {
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: none;
+  background: white;
+
+  &:hover {
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+
+    .pueblo-image {
+      transform: scale(1.1);
+    }
+  }
+
+  ::ng-deep .p-card-header {
+    overflow: hidden;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+      pointer-events: none;
+    }
+  }
+
+  .pueblo-image {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    transition: transform 0.6s ease;
+  }
+
+  ::ng-deep .p-card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+  }
+
+  .location {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-color-secondary);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+
+    i {
+      color: #667eea;
+      font-size: 1.1rem;
+    }
+  }
+
+  .description {
+    line-height: 1.7;
+    color: #718096;
+    font-size: 0.95rem;
+  }
+
+  .info-chips {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+    flex-wrap: wrap;
+
+    .info-chip {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 1rem;
+      background: linear-gradient(135deg, #f0f4ff 0%, #e9ecef 100%);
+      border-radius: 20px;
+      font-size: 0.85rem;
+      color: #4a5568;
+      font-weight: 500;
+
+      i {
+        font-size: 0.8rem;
+        color: #667eea;
+      }
+    }
+  }
+
+  ::ng-deep .p-card-footer {
+    padding-top: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+  }
+
+  .tags {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+
+    ::ng-deep .p-tag {
+      font-weight: 500;
+      padding: 0.4rem 0.9rem;
+      border-radius: 12px;
+      font-size: 0.85rem;
+    }
+  }
+
+  ::ng-deep .p-button-text {
+    color: #667eea;
+    font-weight: 600;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: rgba(102, 126, 234, 0.1);
+      color: #764ba2;
+    }
+  }
+}
+
+// Animaciones
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-10px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(10px);
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .container {
+    padding: 2rem 1rem;
+  }
+
+  .header {
+    h1 {
+      font-size: 2.2rem;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+    }
+  }
+
+  .search-section {
+    flex-direction: column;
+
+    p-iconfield {
+      width: 100%;
+    }
+  }
+
+  .pueblos-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .pueblo-card {
+    &:hover {
+      transform: translateY(-8px);
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .header h1 {
+    font-size: 1.8rem;
+  }
+
+  .pueblo-card .pueblo-image {
+    height: 200px;
+  }
+}

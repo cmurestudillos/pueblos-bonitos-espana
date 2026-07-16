@@ -1,0 +1,126 @@
+<div class="container">
+  <!-- Header -->
+  <div class="header">
+    <h1>Pueblos Más Bonitos de España</h1>
+    <p class="subtitle">Descubre los pueblos con más encanto de España</p>
+  </div>
+
+  <!-- Barra de búsqueda -->
+  <div class="search-section">
+    <p-iconfield iconPosition="left">
+      <p-inputicon styleClass="pi pi-search"></p-inputicon>
+      <input
+        type="text"
+        pInputText
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearchChange()"
+        placeholder="Buscar por nombre, provincia o comunidad..."
+        class="search-input" />
+    </p-iconfield>
+    @if (searchTerm) {
+      <p-button
+        icon="pi pi-times"
+        (onClick)="clearSearch()"
+        [text]="true"
+        [rounded]="true"
+        severity="secondary"
+        label="Limpiar">
+      </p-button>
+    }
+  </div>
+
+  <!-- Contador de resultados -->
+  @if (!loading && !error) {
+    <div class="results-count">
+      <p>Mostrando {{ pueblosFiltrados.length }} de {{ pueblos.length }} pueblos</p>
+    </div>
+  }
+
+  <!-- Loading -->
+  @if (loading) {
+    <div class="loading-container">
+      <p-progressSpinner></p-progressSpinner>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (error) {
+    <div class="error-message">
+      <p>{{ error }}</p>
+    </div>
+  }
+
+  <!-- Mensaje sin resultados -->
+  @if (!loading && !error && pueblosFiltrados.length === 0) {
+    <div class="no-results">
+      <i class="pi pi-search" aria-hidden="true" style="font-size: 3rem; color: var(--text-color-secondary)"></i>
+      <p>No se encontraron pueblos con los criterios de búsqueda</p>
+      <p-button label="Limpiar búsqueda" icon="pi pi-times" (onClick)="clearSearch()"> </p-button>
+    </div>
+  }
+
+  <!-- Grid de pueblos -->
+  @if (!loading && !error && pueblosFiltrados.length > 0) {
+    <div class="pueblos-grid">
+      @for (pueblo of pueblosFiltrados; track pueblo._id ?? pueblo.nombre) {
+        <p-card class="pueblo-card">
+          <ng-template pTemplate="header">
+            <img
+              [alt]="pueblo.nombre"
+              [src]="getPrincipalImage(pueblo)"
+              class="pueblo-image"
+              (error)="onImageError($event)" />
+          </ng-template>
+
+          <ng-template pTemplate="title">
+            {{ pueblo.nombre }}
+          </ng-template>
+
+          <ng-template pTemplate="subtitle">
+            <div class="location">
+              <i class="pi pi-map-marker" aria-hidden="true"></i>
+              {{ pueblo.provincia }} - {{ pueblo.comunidadAutonoma }}
+            </div>
+          </ng-template>
+
+          <p class="description">
+            {{ pueblo.descripcion | slice: 0 : 150 }}{{ pueblo.descripcion.length > 150 ? '...' : '' }}
+          </p>
+
+          @if (pueblo.poblacion || pueblo.altitud) {
+            <div class="info-chips">
+              @if (pueblo.poblacion) {
+                <span class="info-chip">
+                  <i class="pi pi-users" aria-hidden="true"></i> {{ pueblo.poblacion }} hab.
+                </span>
+              }
+              @if (pueblo.altitud) {
+                <span class="info-chip"> <i class="pi pi-arrow-up" aria-hidden="true"></i> {{ pueblo.altitud }}m </span>
+              }
+            </div>
+          }
+
+          <ng-template pTemplate="footer">
+            <div class="tags">
+              @if (pueblo.caracteristicas?.esCostero) {
+                <p-tag value="Costero" icon="pi pi-sun" severity="info"> </p-tag>
+              }
+              @if (pueblo.caracteristicas?.tieneCastillo) {
+                <p-tag value="Castillo" icon="pi pi-building" severity="warn"> </p-tag>
+              }
+              @if (pueblo.caracteristicas?.tieneIglesia) {
+                <p-tag value="Iglesia" icon="pi pi-star" severity="danger"> </p-tag>
+              }
+            </div>
+            <p-button
+              label="Ver detalles"
+              icon="pi pi-arrow-right"
+              styleClass="p-button-text"
+              [routerLink]="['/pueblos', pueblo.nombre]">
+            </p-button>
+          </ng-template>
+        </p-card>
+      }
+    </div>
+  }
+</div>
